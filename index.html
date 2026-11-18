@@ -1410,8 +1410,8 @@ function showHub(tab){mode='board';$('hud').classList.add('hidden');S=null;if(ta
   ov.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy,g=b.dataset.g,v=(g==='kit'?KIT:VIL).find(q=>q[0]===k);if(SV.purse<v[3])return;SV.purse-=v[3];SV[g][k]=1;save();sfx.star();toast('Bought: '+v[1],'good');unlockAch('firstbuy');
     if(k==='bunting')unlockAch('coronation');if(KIT.every(q=>SV.kit[q[0]]))unlockAch('allkit');if(VIL.every(q=>SV.vil[q[0]]))unlockAch('allvil');applySeason();mmBase=null;if(g==='vil')peek(k);else showHub('fund');});
   $('bSet').onclick=()=>showSettings(()=>showHub());$('bTitle').onclick=showTitle;}
-const PEEK={flag:[24,12],boxes:[20,9],benches:[23,21],lamps:[17,16],boats:[26,7],pool:[25,3],hall:[20,12],bunting:[17,14],band:[15,20]};
-function peek(k){const p=PEEK[k];closeOv();mode='peek';cam.x=p[0]+.5;cam.y=p[1]+.5;toast('🏘️ The village thanks you!','good');setTimeout(()=>showHub('fund'),2600);}
+const PEEK={flag:[24,12],boxes:[20,9],benches:[23,21],lamps:[17,16],boats:[26,7],pool:[25,3],hall:[20,12],bunting:[17,14],band:[15,20],phone:[16,17],scope:[25,24],swings:[7,21],fountain:[14,18],clock:[14,21]};
+function peek(k){const p=PEEK[k];if(!p){showHub('fund');return;}closeOv();mode='peek';cam.x=p[0]+.5;cam.y=p[1]+.5;toast('🏘️ The village thanks you!','good');setTimeout(()=>showHub('fund'),2600);}
 function showBrief(j){mode='brief';if(j.hourFn)j.hour=j.hourFn();const r=rankOf(j.id),d=jd(j.id),nx=RXP[r+1],st=starsFor(j);
   openOv(`<div class="center"><div style="font-size:54px">${j.icon}</div><h2>${j.name}</h2><div class="kicker">${rankName(j.id,r)} · pay ×${payMult(r).toFixed(2)}</div></div><div class="rule"></div><p>${j.desc}</p>
    <table class="stat"><tr><td>Shift</td><td>${clockStr(j.hour*60)} to ${clockStr(j.hour*60+shiftLen())}</td></tr><tr><td>★</td><td>${lsd(st[0])}</td></tr><tr><td>★★</td><td>${lsd(st[1])}</td></tr><tr><td>★★★</td><td>${lsd(st[2])}</td></tr><tr><td>Best shift</td><td>${d.best?lsd(d.best):'—'}</td></tr></table>
