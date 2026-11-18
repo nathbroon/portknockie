@@ -113,6 +113,7 @@ h3{font-size:17px;margin:12px 0 4px}
 .squeak.on{transform:translateX(0) rotate(-1deg)}
 .squeak .mast{font-family:'Playfair Display',serif;font-weight:900;font-size:10px;letter-spacing:2px;border-bottom:1px solid var(--ink);padding-bottom:2px;margin-bottom:4px;display:flex;justify-content:space-between;gap:6px}
 .squeak .hl{font-family:'Playfair Display',serif;font-size:17px;line-height:1.12;margin-bottom:3px}
+.squeak .byl,.gazette .byl{font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:.7;margin:2px 0 4px}
 .squeak p{margin:0;font-size:12px;line-height:1.35}
 .squeak .by{font-style:italic;opacity:.75;margin-top:3px}
 .gazette{border:2px solid var(--ink);padding:8px 10px;margin:10px 0;background:#f8f3e3}
@@ -1415,7 +1416,7 @@ function squeakNow(){if(!S||!set().squeak)return;const j=S.job,{n,proj}=squeakTi
   const st=n>=3?'On course for three stars.':n?`On course for ${n} star${n>1?'s':''}.`:'Not yet on course for a star.';
   const need=next!=null?` Another ${lsd(Math.max(1,Math.ceil(next-S.earn)))} earns the next star.`:' All three stars already in the bag!';
   const el=$('squeak');
-  el.innerHTML=`<div class="mast"><span>THE BUCKIE SQUEAK</span><span>${clockStr(j.hour*60+S.t)}</span></div><div class="hl">${dor(fill(pick(SQK[n])))}</div>
+  el.innerHTML=`<div class="mast"><span>THE BUCKIE SQUEAK</span><span>${clockStr(j.hour*60+S.t)}</span></div><div class="hl">${dor(fill(pick(SQK[n])))}</div><div class="byl">${dor('By')} <span data-nodor>Alan Beresford</span></div>
    <p>${dor((ln?`${ln[0]} so far: ${ln[1]}. `:'')+st+need)}</p><p class="by">${dor(fill(pick(SQQ[n])))}</p>`;
   el.classList.add('on');sfx.swish();setTimeout(()=>sfx.swish(),120);clearTimeout(sqkT);sqkT=setTimeout(()=>el.classList.remove('on'),7000);}
 function squeakHide(){clearTimeout(sqkT);const el=$('squeak');if(el)el.classList.remove('on');}
@@ -1429,7 +1430,7 @@ function showSummary(stars,oldR,newR,unl,ordNew){const j=S.job,st=S.st;
   const d=jd(j.id),nx=RXP[newR+1];const mon={spring:3,summer:6,autumn:9,winter:0}[SEASON];const date=new Date(1953,mon+((d.shifts)%3),1+((d.shifts*7)%27));
   const aff=[...KIT,...VIL].filter(v=>!fund(v[0])&&SV.purse>=v[3]).length;
   openOv(`<div class="center"><div class="kicker">${j.icon} ${j.name} · Shift Over</div><div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.2+i*.3}s">★</span>`).join('')}</div><h2>${lsd(S.earn)} earned</h2></div>
-   <div class="gazette"><div class="mast"><span>THE BUCKIE SQUEAK</span><span>${date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} 1953</span></div><div class="hl">${GAZ[j.id][stars]}</div></div>
+   <div class="gazette"><div class="mast"><span>THE BUCKIE SQUEAK</span><span>${date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} 1953</span></div><div class="hl">${GAZ[j.id][stars]}</div><div class="byl">By <span data-nodor>Alan Beresford</span></div></div>
    <table class="stat">${lines.map(l=>`<tr><td>${l[0]}</td><td>${l[1]}</td></tr>`).join('')}<tr><td>Purse</td><td>${lsd(SV.purse)}</td></tr></table>
    ${newR>oldR?`<div class="hint" style="font-size:15px">🎖️ <b>Promoted to ${rankName(j.id,newR)}!</b> You now earn +${newR*10}% pay as ${j.name}.</div>`:nx!=null?`<p style="font-size:13px">Next promotion, to <b>${rankName(j.id,newR+1)}</b>: ${d.xp}/${nx} stars · ${nx-d.xp} to go</p><div class="bar"><i style="width:${clamp(d.xp/nx*100,0,100)}%"></i></div>`:''}
    ${unl.map(u=>`<div class="hint" style="font-size:15px">🔓 <b>New job unlocked: ${u.icon} ${u.name}</b></div>`).join('')}
