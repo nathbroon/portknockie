@@ -476,7 +476,21 @@ const INC=[
 ];
 const LINES=['To {d}, please. I\'m in a hurry!','Tak me to {d}, loon.','{d}, and dinna spare the horses!','Could you run me to {d}? My feet are done in.','{d}, please. My train\'s at the quarter past!','Just {d}, thank you kindly.'];
 const FARES=['Pum Mair','Auld Saners','Dottie Slater','Dr Watt','Cockle Pirie','Bosan Wood','the minister','a holidaymaker','Smacker Mair','Wee Johndie','Gyke Findlay','Bo Gardiner'];
-const RANKS=['Apprentice','Steady Hand','Trusted','Senior',"Legend o' the Knock"],RXP=[0,3,8,15,25];
+const RANKS=['Apprentice','Steady Hand','Trusted','Senior',"Legend o' the Knock"],RXP=[0,3,6,10,15];
+// Job-specific titles for each rank (promotion ladder)
+const JRANKS={paper:['New Starter','Regular Round','Double Round','Head o the Rounds','Legend o The Squeak'],
+ post:['Relief Postie','Postie','Senior Postie','Head Postie','Postmaster'],
+ sweep:['Barrow Hand','Scaffie','Senior Scaffie','Foreman Scaffie','Cleansing Inspector'],
+ quine:['Learner','Packer','Gutter','Crew Leader','Pride o the Quay'],
+ bins:['Cairt Hand','Carter','Senior Carter','Head Carter','Burgh Carter'],
+ milk:['Dairy Hand','Milk Round','Senior Round','Head o the Dairy','Cruats Champion'],
+ bobby:['Probationer','Constable','Sergeant','Inspector','Chief Inspector'],
+ fisher:['Cook','Deckhand','Mate','Skipper','Owner-Skipper'],
+ courier:['Van Hand','Driver','Senior Driver','Transport Foreman','Haulage Gaffer'],
+ lamp:['Learner Leerie','Leerie','Senior Leerie','Head Leerie','Keeper o the Lamps'],
+ taxi:['Spare Driver','Cabbie','Regular Cabbie','Senior Cabbie','Owner-Driver'],
+ bus:['Conductor','Driver','Senior Driver','Inspector','Depot Superintendent']};
+const rankName=(id,r)=>(JRANKS[id]||RANKS)[r];
 const jd=id=>SV.jobs[id]||(SV.jobs[id]={best:0,stars:0,xp:0,shifts:0});
 const rankOf=id=>{let r=0;for(let i=0;i<RXP.length;i++)if(jd(id).xp>=RXP[i])r=i;return r;};
 
@@ -706,7 +720,7 @@ function startShift(job){
   const d=doorOf(job.start);Object.assign(player,{fx:d.x+.5,fy:d.y+.5,tx:d.x,ty:d.y,path:[],wps:[],mode:job.mode,veh:job.veh,speed:speedFor(job,r)});
   cam.x=player.fx;cam.y=player.fy;
   HAND[job.id].init();mode='play';closeOv();$('hud').classList.remove('hidden');
-  $('hIcon').textContent=job.icon;$('hName').textContent=dor(job.name);$('hRank').textContent=dor(RANKS[r]);$('hEvent').textContent=dor("🐟 The herring's in! Double pay");
+  $('hIcon').textContent=job.icon;$('hName').textContent=dor(job.name);$('hRank').textContent=dor(rankName(job.id,r));$('hEvent').textContent=dor("🐟 The herring's in! Double pay");
   const ss=$('hEarn').querySelectorAll('.pbar span');ss[0].style.left=(S.stars[0]/S.stars[2]*100)+'%';ss[1].style.left=(S.stars[1]/S.stars[2]*100)+'%';
   if(lightAt(hourNow())<.35)unlockAch('dark');
   const wxn={clear:'',rain:'🌧️ Rain on the wind today.',haar:'🌫️ A haar has rolled in off the Firth.',snow:'❄️ Snow on the way.'}[WX];if(wxn)setTimeout(()=>toast(wxn),900);
@@ -1340,7 +1354,7 @@ function showHub(tab){mode='board';$('hud').classList.add('hidden');S=null;if(ta
   let body='';
   if(hubTab==='jobs'){body=`<div class="grid">${JOBS.map(j=>{const un=SV.earned>=j.unlock,d=jd(j.id),r=rankOf(j.id),nw=un&&!SV.seenJobs.includes(j.id);
       return`<button class="job ${un?'':'locked'}" data-j="${j.id}">${un?(nw?'<span class="new">NEW</span>':''):'<span class="lock">🔒</span>'}<div class="ic">${j.icon}</div><b>${j.name}</b>
-      ${un?`<div class="st">${starStr(d.stars)}</div><small>${RANKS[r]}${d.best?' · best '+lsd(d.best):''}</small>`:`<small>Unlocks at ${lsd(j.unlock)} lifetime wages</small><div class="bar"><i style="width:${clamp(SV.earned/j.unlock*100,0,100)}%"></i></div>`}</button>`;}).join('')}</div>
+      ${un?`<div class="st">${starStr(d.stars)}</div><small>${rankName(j.id,r)}${d.best?' · best '+lsd(d.best):''}</small>`:`<small>Unlocks at ${lsd(j.unlock)} lifetime wages</small><div class="bar"><i style="width:${clamp(SV.earned/j.unlock*100,0,100)}%"></i></div>`}</button>`;}).join('')}</div>
       <p class="center" style="font-size:12px;color:var(--muted);margin-top:10px">Lifetime wages ${lsd(SV.earned)} · Pay bonus +${Math.round((pride()*.02+(SV.vil.band?.05:0)+streakBonus())*100)}% · Floats ${SV.floats.length}/6</p>`;}
   else if(hubTab==='orders'){body=`<p>Fresh orders are posted every morning. Complete them for bonus money in your purse.</p>${D.list.map(o=>{const t=ORDT[o.i];const jb=t.job?JOB[t.job]:null;
       return`<div class="item ${o.done?'':''}"><span class="i">${o.done?'✅':jb?jb.icon:{stars:'⭐',earn:'💷',shifts:'🕰️',card:'📮'}[t.any]}</span><div class="t"><b>${ordTxt(o)}</b><small>${jb?jb.name+' · ':''}Reward ${lsd(o.reward)}${t.any==='shifts'?` · ${Math.min(o.prog,o.n)}/${o.n}`:''}</small></div>${o.done?'<span class="chip">Done</span>':''}</div>`;}).join('')}
@@ -1361,9 +1375,9 @@ function showHub(tab){mode='board';$('hud').classList.add('hidden');S=null;if(ta
 const PEEK={flag:[24,12],boxes:[20,9],benches:[23,21],lamps:[17,16],boats:[26,7],pool:[25,3],hall:[20,12],bunting:[17,14],band:[15,20]};
 function peek(k){const p=PEEK[k];closeOv();mode='peek';cam.x=p[0]+.5;cam.y=p[1]+.5;toast('🏘️ The village thanks you!','good');setTimeout(()=>showHub('fund'),2600);}
 function showBrief(j){mode='brief';if(j.hourFn)j.hour=j.hourFn();const r=rankOf(j.id),d=jd(j.id),nx=RXP[r+1],st=starsFor(j);
-  openOv(`<div class="center"><div style="font-size:54px">${j.icon}</div><h2>${j.name}</h2><div class="kicker">${RANKS[r]} · pay ×${payMult(r).toFixed(2)}</div></div><div class="rule"></div><p>${j.desc}</p>
+  openOv(`<div class="center"><div style="font-size:54px">${j.icon}</div><h2>${j.name}</h2><div class="kicker">${rankName(j.id,r)} · pay ×${payMult(r).toFixed(2)}</div></div><div class="rule"></div><p>${j.desc}</p>
    <table class="stat"><tr><td>Shift</td><td>${clockStr(j.hour*60)} to ${clockStr(j.hour*60+shiftLen())}</td></tr><tr><td>★</td><td>${lsd(st[0])}</td></tr><tr><td>★★</td><td>${lsd(st[1])}</td></tr><tr><td>★★★</td><td>${lsd(st[2])}</td></tr><tr><td>Best shift</td><td>${d.best?lsd(d.best):'—'}</td></tr></table>
-   ${nx!=null?`<p style="font-size:13px;margin-top:8px">Promotion to <b>${RANKS[r+1]}</b>: ${d.xp}/${nx} stars</p><div class="bar"><i style="width:${clamp(d.xp/nx*100,0,100)}%"></i></div>`:'<p class="center"><b>Top rank reached!</b></p>'}
+   ${nx!=null?`<p style="font-size:13px;margin-top:8px">Promotion to <b>${rankName(j.id,r+1)}</b>: ${d.xp}/${nx} stars</p><div class="bar"><i style="width:${clamp(d.xp/nx*100,0,100)}%"></i></div>`:'<p class="center"><b>Top rank reached!</b></p>'}
    <div class="hint">Gold beacons mark your jobs; an arrow at the screen edge points to the next one. Watch for the <b>herring rush</b>: double pay for 20 seconds!</div>`,
    `<button class="big" id="go">Start Shift</button><button class="big plain" id="back">Back to the Board</button>`);$('go').onclick=()=>startShift(j);$('back').onclick=()=>showHub();}
 function pause(){if(mode!=='play')return;mode='pause';openOv(`<div class="center"><div style="font-size:44px">🫖</div><h2>Tea Break</h2><p>${S.job.icon} ${S.job.name} · ${clockStr(nowMin())} · ${lsd(S.earn)} earned</p></div>`,
@@ -1381,7 +1395,7 @@ function showSummary(stars,oldR,newR,unl,ordNew){const j=S.job,st=S.st;
   openOv(`<div class="center"><div class="kicker">${j.icon} ${j.name} · Shift Over</div><div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.2+i*.3}s">★</span>`).join('')}</div><h2>${lsd(S.earn)} earned</h2></div>
    <div class="gazette"><div class="mast"><span>THE SQUEAK</span><span>${date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} 1953</span></div><div class="hl">${GAZ[j.id][stars]}</div></div>
    <table class="stat">${lines.map(l=>`<tr><td>${l[0]}</td><td>${l[1]}</td></tr>`).join('')}<tr><td>Purse</td><td>${lsd(SV.purse)}</td></tr></table>
-   ${newR>oldR?`<div class="hint" style="font-size:15px">🎖️ <b>Promoted to ${RANKS[newR]}!</b> You now earn +${newR*10}% pay as ${j.name}.</div>`:nx!=null?`<p style="font-size:13px">Promotion: ${d.xp}/${nx} stars</p><div class="bar"><i style="width:${clamp(d.xp/nx*100,0,100)}%"></i></div>`:''}
+   ${newR>oldR?`<div class="hint" style="font-size:15px">🎖️ <b>Promoted to ${rankName(j.id,newR)}!</b> You now earn +${newR*10}% pay as ${j.name}.</div>`:nx!=null?`<p style="font-size:13px">Next promotion, to <b>${rankName(j.id,newR+1)}</b>: ${d.xp}/${nx} stars · ${nx-d.xp} to go</p><div class="bar"><i style="width:${clamp(d.xp/nx*100,0,100)}%"></i></div>`:''}
    ${unl.map(u=>`<div class="hint" style="font-size:15px">🔓 <b>New job unlocked: ${u.icon} ${u.name}</b></div>`).join('')}
    ${ordNew?`<div class="hint">📋 ${ordNew} daily order${ordNew>1?'s':''} completed!</div>`:''}
    ${aff?`<div class="hint">🏦 You can afford ${aff} thing${aff>1?'s':''} at the Village Fund.</div>`:''}
