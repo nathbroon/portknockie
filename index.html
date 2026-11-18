@@ -563,7 +563,7 @@ const HAND={
   tile(x,y){const i=S.litter.findIndex(l=>l.x===x&&l.y===y);if(i<0)return;
    if(S.cart>=S.cap){if(S.t-(S.warnF||-9)>1.2){addFloat(x,y,'Barrow full!','#a8322d');S.warnF=S.t;}if(S.t-(S.warn||-9)>3){toast('Barrow full! Empty it at the Council Yard','bad');S.warn=S.t;}return;}
    S.litter.splice(i,1);S.cart++;S.st.swept++;pay(1,x,y);sfx.swish();if(S.st.swept>=50)unlockAch('tidy');
-   if(S.cart>=S.cap*.6&&!S.targets.some(t=>t.kind==='yard'))S.targets.push({...doorOf('Council Yard'),icon:'🧹',kind:'yard'});if(S.cart>=S.cap)toast('Barrow full! Head to the Council Yard');},
+   if(S.cart>=S.cap*.6&&!S.targets.some(t=>t.kind==='yard'))S.targets.push({...doorOf('Council Yard'),icon:'🚮',kind:'yard',label:'Empty the barrow at the Council Yard'});if(S.cart>=S.cap){toast('Barrow full! Head to the Council Yard');S.warn=S.t;}},
   arrive(t){if(t.kind==='yard'&&S.cart>0){pay(3+Math.floor(S.cart/2),t.x,t.y,'tipped');S.st.tips++;S.cart=0;rmT(t);sfx.clank();}
     else if(t.kind==='gutter'){rmT(t);S.st.drains++;pay(6+Math.ceil(t.left/8),t.x,t.y,'drain cleared');sfx.swish();}
     else if(t.kind==='ice'){rmT(t);S.st.ice++;pay(2,t.x,t.y,'sanded');sfx.swish();if(!S.targets.some(q=>q.kind==='ice'))toast('Roads sanded and safe again.','good');}
@@ -579,7 +579,7 @@ const HAND={
   init(){S.load=0;S.cap=8+2*S.rank;S.st.bins=0;S.st.tips=0;for(let i=0;i<7;i++)this.add();},
   add(){const h=pickHouses(1)[0];if(h)S.targets.push({x:h.door.x,y:h.door.y,icon:'🗑️',kind:'bin',h,small:true});},
   arrive(t){if(t.kind==='bin'){if(S.load>=S.cap){if(S.t-(S.warn||-9)>3){toast('Cairt full! Tip it at the Council Yard','bad');S.warn=S.t;}return;}
-    rmT(t);S.load++;S.st.bins++;pay(2,t.x,t.y);sfx.clank();this.add();if(S.load>=S.cap*.6&&!S.targets.some(q=>q.kind==='yard'))S.targets.push({...doorOf('Council Yard'),icon:'🐴',kind:'yard'});}
+    rmT(t);S.load++;S.st.bins++;pay(2,t.x,t.y);sfx.clank();this.add();if(S.load>=S.cap*.6&&!S.targets.some(q=>q.kind==='yard'))S.targets.push({...doorOf('Council Yard'),icon:'🚮',kind:'yard',label:'Tip the cairt at the Council Yard'});}
    else if(t.kind==='yard'&&S.load>0){pay(S.load+4,t.x,t.y,'tipped');S.st.tips++;S.load=0;rmT(t);sfx.clank();}},
   focus(){const y=S.targets.find(q=>q.kind==='yard');if(y&&S.load>=S.cap)return y;return nearest(S.targets.filter(q=>q.kind==='bin'))||y;},
   obj(){return`Cairt: <b>${S.load}/${S.cap}</b> bins${S.load>=S.cap?'<div class="sub">Full! Tip your load at the Council Yard.</div>':'<div class="sub">Drive the horse to the dustbins left out at the kerb.</div>'}`;},
@@ -1297,7 +1297,7 @@ function render(t){
     if(f&&!fm&&S.litter&&S.litter.includes(f))fm=null;
     if(f&&set().arrow){const z=hAt(f.x+.5,f.y+.5),p=P(f.x+.5,f.y+.5,z),isL=S.litter&&S.litter.includes(f),by=p[1]-(MKH+6)*Z,r=12*Z;
       const vis=p[0]>m&&p[0]<w-m&&by-r>sa.top&&p[1]<sa.bot;
-      if(!vis){const c=[w/2,(sa.top+sa.bot)/2],ty=Math.min(p[1],(by+p[1])/2),dx=p[0]-c[0],dy=ty-c[1],hw=w/2-m,hh=Math.max(30,(sa.bot-sa.top)/2-34),sc=Math.min(hw/Math.abs(dx||1e-3),hh/Math.abs(dy||1e-3),1),ax=c[0]+dx*sc,ay=c[1]+dy*sc,an=Math.atan2(dy,dx);
+      if(!vis){const tE=$('toasts'),tb=tE&&tE.childElementCount?tE.getBoundingClientRect().bottom+6:0,aTop=Math.max(sa.top,Math.min(tb,(sa.top+sa.bot)/2-40)),c=[w/2,(aTop+sa.bot)/2],ty=Math.min(p[1],(by+p[1])/2),dx=p[0]-c[0],dy=ty-c[1],hw=w/2-m,hh=Math.max(30,(sa.bot-aTop)/2-34),sc=Math.min(hw/Math.abs(dx||1e-3),hh/Math.abs(dy||1e-3),1),ax=c[0]+dx*sc,ay=c[1]+dy*sc,an=Math.atan2(dy,dx);
       ARROW={x:ax,y:ay,tg:f};const pu=1+Math.sin(t*4)*.06;cx.save();cx.translate(ax,ay);cx.rotate(an);cx.beginPath();cx.moveTo(27*pu,0);cx.lineTo(8,-13);cx.lineTo(8,13);cx.closePath();cx.fillStyle=f.urgent?'#a8322d':'#24211c';cx.fill();cx.restore();circ(ax,ay,19*pu,'#f5eedc');cx.lineWidth=2.5;cx.strokeStyle=f.urgent?'#a8322d':'#24211c';cx.beginPath();cx.arc(ax,ay,19*pu,0,7);cx.stroke();emoji(f.icon,ax,ay+1,17);
       cx.font='bold 9px Lora,serif';cx.fillStyle='#24211c';cx.textAlign='center';cx.fillText(dor('TAP TO GO'),ax,ay+30);}}}
   for(const f of floatsTxt){const p=P(f.x,f.y,hAt(f.x,f.y)+1.2+f.t*1.2),a=clamp(1.6-f.t,0,1);cx.globalAlpha=a;cx.font=`bold ${Math.max(12,14*Z)}px Lora,Georgia,serif`;cx.textAlign='center';cx.lineWidth=3;cx.strokeStyle='#f5eedc';cx.strokeText(f.txt,p[0],p[1]);cx.fillStyle=f.col;cx.fillText(f.txt,p[0],p[1]);cx.globalAlpha=1;}
