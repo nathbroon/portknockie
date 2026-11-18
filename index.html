@@ -109,6 +109,12 @@ h3{font-size:17px;margin:12px 0 4px}
 .stars span{display:inline-block}
 .stars .on{color:var(--gold);text-shadow:0 2px 0 #7a5a10;animation:pop .5s backwards}
 @keyframes pop{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.3)}}
+.squeak{position:fixed;left:10px;bottom:calc(env(safe-area-inset-bottom) + 96px);width:min(300px,calc(100vw - 80px));z-index:6;background:#f8f3e3;border:2px solid var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.28);padding:7px 10px 8px;transform:translateX(-120%) rotate(-2deg);transition:transform .45s cubic-bezier(.2,.9,.3,1.2);cursor:pointer}
+.squeak.on{transform:translateX(0) rotate(-1deg)}
+.squeak .mast{font-family:'Playfair Display',serif;font-weight:900;font-size:10px;letter-spacing:2px;border-bottom:1px solid var(--ink);padding-bottom:2px;margin-bottom:4px;display:flex;justify-content:space-between;gap:6px}
+.squeak .hl{font-family:'Playfair Display',serif;font-size:17px;line-height:1.12;margin-bottom:3px}
+.squeak p{margin:0;font-size:12px;line-height:1.35}
+.squeak .by{font-style:italic;opacity:.75;margin-top:3px}
 .gazette{border:2px solid var(--ink);padding:8px 10px;margin:10px 0;background:#f8f3e3}
 .gazette .mast{font-family:'Playfair Display',serif;font-weight:900;font-size:11px;letter-spacing:2px;border-bottom:1px solid var(--ink);padding-bottom:3px;margin-bottom:5px;display:flex;justify-content:space-between;gap:6px}
 .gazette .hl{font-family:'Playfair Display',serif;font-size:20px;line-height:1.15}
@@ -157,6 +163,7 @@ input[type=range]{width:100%;accent-color:var(--navy)}
 </head>
 <body>
 <canvas id="c"></canvas>
+<div id="squeak" class="squeak" role="status" aria-live="polite"></div>
 <div id="hud" class="hidden">
   <div id="hTop">
     <div id="hJob" class="pane"><span id="hIcon"></span><div style="min-width:0"><b id="hName"></b><small id="hRank"></small></div></div>
@@ -188,7 +195,7 @@ const todayStr=(o=0)=>{const d=new Date(Date.now()+o*864e5);return d.getFullYear
 
 // ============================================================ save & settings
 const KEY='portknockie-rounds-v2';
-const DEFSET={stack:true,lang:'doric',season:'auto',weather:'auto',tod:'clock',crowd:'normal',music:true,track:'shuffle',mvol:.5,svol:.8,avol:.5,shift:'standard',diff:'standard',labels:true,minimap:true,arrow:true,pathline:true,currency:'lsd',clock:'12',bigtext:false,motion:true,quality:'high',haptics:true};
+const DEFSET={stack:true,lang:'doric',season:'auto',weather:'auto',tod:'clock',crowd:'normal',music:true,track:'shuffle',mvol:.5,svol:.8,avol:.5,shift:'standard',diff:'standard',labels:true,minimap:true,arrow:true,pathline:true,currency:'lsd',clock:'12',bigtext:false,motion:true,quality:'high',squeak:true,haptics:true};
 let SV={earned:0,purse:0,jobs:{},ach:{},floats:[],cards:[],kit:{},vil:{},daily:null,streak:0,lastDay:'',seenJobs:['paper','post','sweep'],set:{...DEFSET}};
 try{const s=JSON.parse(localStorage.getItem(KEY));if(s){SV=Object.assign(SV,s);SV.set=Object.assign({...DEFSET},s.set||{});}}catch(e){}
 
@@ -734,7 +741,7 @@ function checkTile(x,y){
   if(Math.abs(dog.fx-(x+.5))<1.2&&Math.abs(dog.fy-(y+.5))<1.2&&player.veh==='walk'){if(!SV.ach.dog)addFloat(x,y,'♥ Woof!','#a8322d');unlockAch('dog');}
 }
 function unlockAch(id){if(SV.ach[id])return;SV.ach[id]=Date.now();save();const a=ACH.find(a=>a[0]===id);toast('🏆 '+a[2],'ach');sfx.star();if(S)S.newAch.push(id);}
-function endShift(){
+function endShift(){squeakHide();
   const j=S.job,d=jd(j.id);const stars=S.stars.filter(s=>S.earn>=s).length;
   const oldRank=rankOf(j.id),wasUn=JOBS.filter(q=>SV.earned>=q.unlock).length;
   SV.earned+=S.earn;SV.purse+=S.earn;d.best=Math.max(d.best,S.earn);d.stars=Math.max(d.stars,stars);d.xp+=stars;d.shifts++;
@@ -1198,6 +1205,7 @@ function update(dt){
     if((player.veh==='cart'||player.veh==='bincart')&&player.mv){S.hoof=(S.hoof||0)-dt;if(S.hoof<=0){S.hoof=.28;S.hf=!S.hf;tone(S.hf?820:640,.05,'square',.025);}}
     if(!player.path.length&&S.targets.some(t=>t.x===player.tx&&t.y===player.ty)){S.idleHere=(S.idleHere||0)+dt;if(S.idleHere>.25){S.idleHere=-1.5;checkTile(player.tx,player.ty);}}else S.idleHere=0;
     S.t+=dt;const h=HAND[S.job.id];if(h.update)h.update(dt);
+    {const nB=Math.max(1,Math.round(S.dur/50)-1),gap=S.dur/(nB+1);if(S.sqk==null)S.sqk=1;if(S.sqk<=nB&&S.t>=gap*S.sqk){S.sqk++;squeakNow();}}
     const was=S.rushOn;S.rushOn=S.t>=S.rushAt&&S.t<S.rushAt+20;if(S.rushOn&&!was){$('hEvent').classList.remove('hidden');toast("🐟 The herring's in! Double pay for 20 seconds",'ach');sfx.star();}if(!S.rushOn&&was)$('hEvent').classList.add('hidden');
     hudT-=dt;if(hudT<=0){hudT=.2;updHud();}if(S.t>=S.dur)endShift();
     cam.x+=(player.fx-cam.x)*Math.min(1,dt*5);cam.y+=(player.fy-cam.y)*Math.min(1,dt*5);
@@ -1335,7 +1343,7 @@ function updHud(){const m=nowMin();$('hTime').textContent=clockStr(m);$('hClock'
   $('hPay').textContent=lsd(S.earn);$('hBar').style.width=clamp(S.earn/S.stars[2]*100,0,100)+'%';const sp=$('hEarn').querySelectorAll('.pbar span');S.stars.forEach((v,i)=>sp[i].className=S.earn>=v?'on':'');
   $('hObj').innerHTML=`<span class="oi">${HAND[S.job.id].icon}</span><div>${HAND[S.job.id].obj()}</div>`;dorNode($('hObj'));$('mm').classList.toggle('hidden',!set().minimap);}
 const ov=$('ov');let hubTab='jobs';
-function openOv(body,foot,tabs){ov.innerHTML=`<div class="sheet"><div class="scroll">${body}</div>${foot?`<div class="foot">${foot}</div>`:''}${tabs||''}</div>`;dorNode(ov);ov.classList.remove('hidden');}
+function openOv(body,foot,tabs){if(typeof squeakHide==="function")squeakHide();ov.innerHTML=`<div class="sheet"><div class="scroll">${body}</div>${foot?`<div class="foot">${foot}</div>`:''}${tabs||''}</div>`;dorNode(ov);ov.classList.remove('hidden');}
 function closeOv(){ov.classList.add('hidden');ov.innerHTML='';}
 const starStr=n=>'★'.repeat(n)+`<span class="off">${'★'.repeat(3-n)}</span>`;
 const wxName=()=>({clear:SEASON==='winter'?'Crisp':'Fair',rain:'Rain',haar:'Haar',snow:'Snow'}[WX]);
@@ -1384,16 +1392,44 @@ function pause(){if(mode!=='play')return;mode='pause';openOv(`<div class="center
   `<button class="big" id="res">Back to Work</button><div class="row"><button class="big plain" id="bSet">⚙️ Settings</button><button class="big plain" id="quit">Quit (no pay)</button></div>`);
   $('res').onclick=resume;$('quit').onclick=()=>{S=null;showHub();};$('bSet').onclick=()=>showSettings(()=>{mode='play';pause();});}
 function resume(){closeOv();mode='play';lastT=performance.now();}
-function showSummary(stars,oldR,newR,unl,ordNew){const j=S.job,st=S.st;
-  const lines={paper:[['Papers delivered',st.del],['Best streak','×'+st.best]],post:[['Letters delivered',st.letters],['Parcels delivered',st.parcels]],sweep:[['Litter swept',st.swept],['Barrows emptied',st.tips],['Drains cleared',st.drains],['Icy patches sanded',st.ice],['Square tidied for market',st.squares]],
+
+// ------------------------------------------------------------ The Buckie Squeak: mid-shift news bulletins
+const SQK={
+ 0:['{T} Off to a Slow Start','Village Still Waiting on {T}','"Fit\'s Keepin Them?" Ask Locals','Quiet Morning for Our {T}'],
+ 1:['{T} Gets Into Stride','Steady Work from Our {T}','{T} Busy About the Village','Good Progress from the {J}'],
+ 2:['{T} Having a Grand Shift','Praise Pours In for Our {T}','{T} the Talk of {P}','{J} Running Like Clockwork'],
+ 3:['{T} Unstoppable!','Record Pace for Portknockie\'s {T}','"Never Seen the Like," Says {N}','{T} Could Be Up for Promotion'],
+};
+const SQQ={
+ 0:['"They\'ll get there in the end," says {N}.','{N} was heard asking if there was a strike on.','"Is it a holiday?" wondered {N} at {P}.'],
+ 1:['"Nae bad at all," says {N}.','{N} reports a steady hand about {P}.','"Daein fine," was the verdict at {P}.'],
+ 2:['"A credit to the village," says {N}.','{N} stopped us at {P} to sing their praises.','"Couldna ask for better," says {N}.'],
+ 3:['"Best I\'ve seen since the war," says {N}.','{N} has written to the Council about a medal.','Crowds gathered at {P} to watch them work.'],
+};
+let sqkT=null;setTimeout(()=>{const e=$('squeak');if(e)e.addEventListener('pointerdown',ev=>{ev.stopPropagation();squeakHide();});},0);
+function squeakTier(){const el=Math.max(S.t,1),proj=S.earn*S.dur/el;let n=0;for(const x of S.stars)if(proj>=x)n++;return{n,proj};}
+function squeakNow(){if(!S||!set().squeak)return;const j=S.job,{n,proj}=squeakTier(),r=rankOf(j.id),T=rankName(j.id,r),ppl=FARES.filter(f=>!/^(the|a) /.test(f)),N=pick(ppl),Pl=pick(BEAT);
+  const fill=x=>x.replace(/\{T\}/g,T).replace(/\{J\}/g,j.name).replace(/\{N\}/g,N).replace(/\{P\}/g,Pl);
+  const ln=jobLines(j,S.st).filter(l=>l[1]!==undefined&&l[1]!==null)[0];
+  const next=S.stars.find(x=>S.earn<x);
+  const st=n>=3?'On course for three stars.':n?`On course for ${n} star${n>1?'s':''}.`:'Not yet on course for a star.';
+  const need=next!=null?` Another ${lsd(Math.max(1,Math.ceil(next-S.earn)))} earns the next star.`:' All three stars already in the bag!';
+  const el=$('squeak');
+  el.innerHTML=`<div class="mast"><span>THE BUCKIE SQUEAK</span><span>${clockStr(j.hour*60+S.t)}</span></div><div class="hl">${dor(fill(pick(SQK[n])))}</div>
+   <p>${dor((ln?`${ln[0]} so far: ${ln[1]}. `:'')+st+need)}</p><p class="by">${dor(fill(pick(SQQ[n])))}</p>`;
+  el.classList.add('on');sfx.swish();setTimeout(()=>sfx.swish(),120);clearTimeout(sqkT);sqkT=setTimeout(()=>el.classList.remove('on'),7000);}
+function squeakHide(){clearTimeout(sqkT);const el=$('squeak');if(el)el.classList.remove('on');}
+function jobLines(j,st){return({paper:[['Papers delivered',st.del],['Best streak','×'+st.best]],post:[['Letters delivered',st.letters],['Parcels delivered',st.parcels]],sweep:[['Litter swept',st.swept],['Barrows emptied',st.tips],['Drains cleared',st.drains],['Icy patches sanded',st.ice],['Square tidied for market',st.squares]],
    bins:[['Bins emptied',st.bins],['Loads tipped',st.tips]],bobby:[['Patrol points',st.beats],['Incidents resolved',st.inc],['Incidents missed',st.missed]],courier:[['Orders delivered',st.del],['Orders spoiled',st.spoiled]],
-   taxi:[['Fares',st.fares],['Tips',st.tips],['Fares lost',st.lost]],fisher:[['Boxes landed',st.boxes],['Nets hauled',st.hauls]],quine:[['Fish sold',st.sold],['Nets mended',st.nets],['Lines baited',st.lines]],milk:[['Pints delivered',st.pints]],lamp:[['Lamps lit',st.lit],['Relit after gusts',st.relit],['Blown out and missed',st.missed]],bus:[['Passengers',st.pax],['On-time stops',st.on],['Late stops',st.late]]}[j.id];
+   taxi:[['Fares',st.fares],['Tips',st.tips],['Fares lost',st.lost]],fisher:[['Boxes landed',st.boxes],['Nets hauled',st.hauls]],quine:[['Fish sold',st.sold],['Nets mended',st.nets],['Lines baited',st.lines]],milk:[['Pints delivered',st.pints]],lamp:[['Lamps lit',st.lit],['Relit after gusts',st.relit],['Blown out and missed',st.missed]],bus:[['Passengers',st.pax],['On-time stops',st.on],['Late stops',st.late]]})[j.id]||[];}
+function showSummary(stars,oldR,newR,unl,ordNew){const j=S.job,st=S.st;
+  const lines=jobLines(j,st);
   if(S.rushEarn)lines.push(['Herring rush earnings',lsd(S.rushEarn)]);
   const ach=S.newAch.map(id=>{const a=ACH.find(q=>q[0]===id);return`<div class="item"><span class="i">${a[1]}</span><div class="t"><b>${a[2]}</b><small>${a[3]}</small></div></div>`;}).join('');
   const d=jd(j.id),nx=RXP[newR+1];const mon={spring:3,summer:6,autumn:9,winter:0}[SEASON];const date=new Date(1953,mon+((d.shifts)%3),1+((d.shifts*7)%27));
   const aff=[...KIT,...VIL].filter(v=>!fund(v[0])&&SV.purse>=v[3]).length;
   openOv(`<div class="center"><div class="kicker">${j.icon} ${j.name} · Shift Over</div><div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.2+i*.3}s">★</span>`).join('')}</div><h2>${lsd(S.earn)} earned</h2></div>
-   <div class="gazette"><div class="mast"><span>THE SQUEAK</span><span>${date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} 1953</span></div><div class="hl">${GAZ[j.id][stars]}</div></div>
+   <div class="gazette"><div class="mast"><span>THE BUCKIE SQUEAK</span><span>${date.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} 1953</span></div><div class="hl">${GAZ[j.id][stars]}</div></div>
    <table class="stat">${lines.map(l=>`<tr><td>${l[0]}</td><td>${l[1]}</td></tr>`).join('')}<tr><td>Purse</td><td>${lsd(SV.purse)}</td></tr></table>
    ${newR>oldR?`<div class="hint" style="font-size:15px">🎖️ <b>Promoted to ${rankName(j.id,newR)}!</b> You now earn +${newR*10}% pay as ${j.name}.</div>`:nx!=null?`<p style="font-size:13px">Next promotion, to <b>${rankName(j.id,newR+1)}</b>: ${d.xp}/${nx} stars · ${nx-d.xp} to go</p><div class="bar"><i style="width:${clamp(d.xp/nx*100,0,100)}%"></i></div>`:''}
    ${unl.map(u=>`<div class="hint" style="font-size:15px">🔓 <b>New job unlocked: ${u.icon} ${u.name}</b></div>`).join('')}
@@ -1421,6 +1457,7 @@ const SETS=[
  {k:'diff',l:'Pace',h:'Brisk pays 15% more',o:()=>[['gentle','Gentle'],['standard','Standard'],['brisk','Brisk']]},
  {k:'stack',l:'Stack taps into a route',h:'Each tap adds a stop; ✖ clears',tog:1},
  {k:'haptics',l:'Vibrate on deliveries',tog:1},
+ {k:'squeak',l:'Buckie Squeak news bulletins',h:'The paper reports on how your shift is going',tog:1},
  {sec:'Display'},
  {k:'labels',l:'Place names',tog:1},{k:'minimap',l:'Minimap',tog:1},{k:'arrow',l:'Guide arrow',tog:1},{k:'pathline',l:'Show route line',tog:1},
  {k:'currency',l:'Money',o:()=>[['lsd','£sd (1953)'],['dec','Decimal (£0.00)']]},{k:'clock',l:'Clock',o:()=>[['12','12-hour'],['24','24-hour']]},
