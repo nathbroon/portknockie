@@ -379,7 +379,7 @@ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const t=map[y][x],r=tv[y][x];
 DECO.push({k:'guide',x:21,y:2},{k:'guide',x:23,y:3},{k:'crane',x:27,y:4},{k:'pierlight',x:31,y:10},{k:'lamp',x:30,y:10},{k:'welcome',x:4,y:23},
   {k:'stack',x:1,y:25},{k:'stack',x:1,y:26},{k:'coo',x:0,y:28},{k:'coo',x:1,y:29},{k:'coo',x:0,y:19},{k:'hens',x:0,y:26},{k:'bridge',x:2,y:22});
 DECO.push({k:'phone',x:17,y:15},{k:'pillar',x:17,y:13},{k:'bench',x:25,y:23},{k:'policelamp',x:8,y:20},{k:'busstop',x:19,y:3},
-  {k:'memorial',x:15,y:19},{k:'well',x:8,y:29},{k:'signal',x:4,y:11},{k:'signal',x:4,y:21},{k:'flagpole',x:24,y:12,fund:'flag'},{k:'bandstand',x:15,y:20,fund:'band'},
+  {k:'memorial',x:15,y:19},{k:'well',x:8,y:29},{k:'signal',x:4,y:11},{k:'signal',x:4,y:21},{k:'flagpole',x:24,y:12,fund:'flag'},{k:'phonebox',x:16,y:17,fund:'phone'},{k:'fountain',x:14,y:18,fund:'fountain'},{k:'sqclock',x:14,y:21,fund:'clock'},{k:'scope',x:25,y:24,fund:'scope'},{k:'swings',x:7,y:21,fund:'swings'},{k:'bandstand',x:15,y:20,fund:'band'},
   {k:'buoy',x:24,y:6},{k:'netpoles',x:22,y:15},{k:'netpoles',x:22,y:24},{k:'netpoles',x:22,y:26});
 for(let y=5;y<=27;y+=3)if(!COLS.includes(y))DECO.push({k:'bunting',x:17,y,fund:'bunting'});
 
@@ -459,6 +459,12 @@ const ACH=[
  ['orders','📋','Orders Filled','Complete all three daily orders in one day'],['streak3','🔥','Regular as the Tide','Work three days in a row'],
  ['herring','🐟','Silver Darlings','Earn 2s during a herring rush'],['dark','🏮','Before the Dawn','Start a shift in the dark'],
  ['haar','🌫️','Lost in the Haar','Complete a shift in the sea fog'],['pier','⚓','Aye Afloat','Walk to the end of the pier'],['leerie','🏮','Leerie','Light every lamp in the village in one shift'],['skipper','🛥️','Skipper','Land 30 boxes of fish in one shift'],['creel','🧺','Fit a Creel!','Sell 25 fish from your creel in one shift'],['milk','🥛','Cream o the Crop','Deliver 30 pints in one shift'],['allstar','🏆','Legend o\' the Knock','Earn three stars in every job'],
+ ['tenner','💰','A Tenner in the Tin','Earn £10 in lifetime wages'],['bank','🐖','Piggy Bank','Have £3 in your purse at once'],
+ ['shifts25','📆','Time Served','Work 25 shifts'],['shifts60','🏅','Weel Kent Face','Work 60 shifts'],
+ ['toprank','👑','Top o the Tree','Reach the top rank in any job'],['sarge','🚔','Sergeant','Make Sergeant as the Village Bobby'],['ownboat','⛵','Yer Ain Boat','Become an Owner-Skipper'],
+ ['hat3','🎩','Hat-Trick','Earn three stars on three shifts in a row'],['frontpage','🗞️','Front Page News','Make the Buckie Squeak headlines for a record pace'],
+ ['rain','☔','Drookit','Complete a shift in the rain'],['snow','❄️','Snaw Day','Complete a shift in the snow'],['seasons','🍂','Aw Weathers','Work a shift in every season'],
+ ['allkit','🧰','Fully Kitted Out','Buy every piece of kit'],['viewpoint','🔭','A Grand View','Walk to the Bow Fiddle viewpoint'],['jenny','💧',"Jenny's Well",'Visit Jenny\'s Well'],
 ];
 const GAZ={
  paper:['Papers Arrive Soggy, Late','Paper Round Keeps Village Informed','Every Doorstep Gets Its Paper','Lightning Paper Round Beats the Sunrise'],
@@ -505,10 +511,18 @@ const rankOf=id=>{let r=0;for(let i=0;i<RXP.length;i++)if(jd(id).xp>=RXP[i])r=i;
 // ============================================================ village fund & daily orders
 const KIT=[['boots','Tackety Boots','🥾',36,'Walk 10% faster on foot'],['gears','Three-Speed Gears','🚲',60,'Paper bike 12% faster'],['bag','Canvas Mailbag','👜',48,'Three more letters per Postie round'],
  ['barrow','Bigger Barrow','🛒',48,'Scaffie barrow holds 6 more'],['tune','Engine Tune-Up','🔧',120,'Motor vehicles and boats 10% faster'],['flask','Tea Flask','🫖',90,'Every shift lasts 20 seconds longer'],
- ['whistle','Silver Whistle','📯',72,'Incidents, fares and fish orders wait 10s longer'],['map','Ordnance Survey Map','🗺️',60,'Floats and postcards appear on your minimap']];
+ ['whistle','Silver Whistle','📯',72,'Incidents, fares and fish orders wait 10s longer'],['map','Ordnance Survey Map','🗺️',60,'Floats and postcards appear on your minimap'],
+ ['satchel','Leather Satchel','🎒',54,'Paper streaks last 2 seconds longer'],['crates','Milk Crates','🍼',54,'Carry 4 more pints on each milk round'],
+ ['creelx','Bigger Creel','🧺',60,'Fisher Quine carries 3 more fish'],['pole','Brass Lamp Pole','🪔',60,'Gusts blow lamps out less often'],
+ ['notebook','Police Notebook','📓',66,'Incidents pay 20% more'],['sides',"Cairt Sideboards",'🐴',72,"Scaffie's Cairt holds 4 more bins"],
+ ['ice','Ice Crates','🧊',80,'Fish orders stay fresh 15s longer'],['ticket','Ticket Machine','🎫',84,'Bus passengers pay 50% more'],
+ ['meter','Taxi Meter','🧾',96,'Taxi fares pay 15% more'],['nets','New Herring Nets','🕸️',110,'Fishing boat holds 3 more boxes']];
 const VIL=[['flag','Harbour Flagpole','🏴',60,'A Saltire flies above the harbour'],['boxes','Window Boxes','🌷',96,'Flower boxes on cottage windows'],['benches','Clifftop Benches','🪑',72,'Benches along the cliff path'],
  ['lamps','Street Lamp Repairs','🏮',96,'Brighter lamps on dark mornings'],['boats','Paint the Fleet','🛥️',144,'Fresh paint and an extra drifter in the harbour'],['pool','Restore the Bathing Pool','🏊',180,'Clean water and summer swimmers'],
- ['hall',"Fishermen's Hall Refit",'🎣',144,'A fresh coat of paint for the Hall'],['bunting','Coronation Bunting','🎉',240,'Bunting along Seafield Street for 1953'],['band','Bandstand in the Square','🎺',360,'A bandstand and brass band (an extra +5% pay)']];
+ ['hall',"Fishermen's Hall Refit",'🎣',144,'A fresh coat of paint for the Hall'],['bunting','Coronation Bunting','🎉',240,'Bunting along Seafield Street for 1953'],['band','Bandstand in the Square','🎺',360,'A bandstand and brass band (an extra +5% pay)'],
+ ['phone','Telephone Box','☎️',108,'A red telephone kiosk on the Square'],['scope','Viewpoint Telescope','🔭',120,'A telescope for spotting dolphins off the Bow Fiddle'],
+ ['swings','Play Park Swings','🛝',132,'Swings for the bairns'],['fountain','Drinking Fountain','⛲',150,'A cast-iron fountain in the Square'],
+ ['clock','Square Clock','🕰️',200,'A proper clock for the Square, showing real time']];
 const pride=()=>VIL.filter(v=>SV.vil[v[0]]).length;
 const fund=k=>!!(SV.vil[k]||SV.kit[k]);
 const ORDT=[
@@ -554,10 +568,10 @@ const HAND={
   init(){S.bag=0;S.streak=0;S.last=-99;S.st.del=0;S.st.best=0;this.refill();},
   refill(){S.targets.push({...doorOf('Paper Shoppie'),icon:'📰',kind:'refill'});},
   arrive(t){if(t.kind==='refill'){rmT(t);S.bag=8+2*S.rank;pickHouses(S.bag).forEach(h=>S.targets.push({x:h.door.x,y:h.door.y,icon:'📰',kind:'house',h}));toast('Basket loaded with '+S.bag+' papers');sfx.bell();}
-   else{rmT(t);S.bag--;S.streak=(S.t-S.last<6)?S.streak+1:1;S.last=S.t;S.st.del++;S.st.best=Math.max(S.st.best,S.streak);
+   else{rmT(t);S.bag--;S.streak=(S.t-S.last<(fund('satchel')?8:6))?S.streak+1:1;S.last=S.t;S.st.del++;S.st.best=Math.max(S.st.best,S.streak);
     pay(1+Math.min(S.streak-1,3),t.x,t.y);sfx.bell();if(S.streak>=3)addFloat(t.x,t.y-1,'Streak ×'+S.streak,'#a8322d');if(S.streak>=8)unlockAch('streak');
     if(S.bag<=0){pay(4,t.x,t.y,'round!');toast('Round done! Back to the Paper Shoppie','good');this.refill();}}},
-  obj(){const left=Math.max(0,6-(S.t-S.last));return S.bag?`Deliver <b>${S.bag}</b> papers${S.streak>1&&left>0?` · streak ×${S.streak} <span class="sub">(${left.toFixed(0)}s)</span>`:''}<div class="sub">Gold beacons mark the doors. Keep moving to hold your streak!</div>`:'Collect more papers at the <b>Paper Shoppie</b> on Church Street';},
+  obj(){const left=Math.max(0,(fund('satchel')?8:6)-(S.t-S.last));return S.bag?`Deliver <b>${S.bag}</b> papers${S.streak>1&&left>0?` · streak ×${S.streak} <span class="sub">(${left.toFixed(0)}s)</span>`:''}<div class="sub">Gold beacons mark the doors. Keep moving to hold your streak!</div>`:'Collect more papers at the <b>Paper Shoppie</b> on Church Street';},
  },
  post:{icon:'✉️',
   init(){S.bag=0;S.st.letters=0;S.st.parcels=0;S.targets.push({...doorOf('Post Office'),icon:'✉️',kind:'refill'});},
@@ -598,7 +612,7 @@ const HAND={
  },
  bins:{icon:'🐴',
   blocked(t){return t.kind==='bin'&&S.load>=S.cap;},
-  init(){S.load=0;S.cap=8+2*S.rank;S.st.bins=0;S.st.tips=0;for(let i=0;i<7;i++)this.add();},
+  init(){S.load=0;S.cap=8+2*S.rank+(fund('sides')?4:0);S.st.bins=0;S.st.tips=0;for(let i=0;i<7;i++)this.add();},
   add(){const h=pickHouses(1)[0];if(h)S.targets.push({x:h.door.x,y:h.door.y,icon:'🗑️',kind:'bin',h,small:true});},
   arrive(t){if(t.kind==='bin'){if(S.load>=S.cap){if(S.t-(S.warn||-9)>3){toast('Cairt full! Tip it at the Council Yard','bad');S.warn=S.t;}return;}
     rmT(t);S.load++;S.st.bins++;pay(2,t.x,t.y);sfx.clank();this.add();if(S.load>=S.cap*.6&&!S.targets.some(q=>q.kind==='yard'))S.targets.push({...doorOf('Council Yard'),icon:'🚮',kind:'yard',label:'Tip the cairt at the Council Yard'});}
@@ -624,7 +638,7 @@ const HAND={
  courier:{icon:'🐟',
   blocked(t){return t.kind==='mart'&&S.orders.filter(o=>o.loaded).length>=S.cap;},
   init(){S.orders=[];S.cap=3+(S.rank>=2?1:0);S.ot=0;S.st.del=0;S.st.spoiled=0;this.order();this.order();this.sync();},
-  order(){let d=randPlace('Fish Mart');if(Math.random()<.3)d={...doorOf('Station'),name:'the Station (Aberdeen train)'};S.orders.push({d,left:(60+Math.random()*25)*dif().t+xtra(),loaded:false});},
+  order(){let d=randPlace('Fish Mart');if(Math.random()<.3)d={...doorOf('Station'),name:'the Station (Aberdeen train)'};S.orders.push({d,left:(60+Math.random()*25)*dif().t+xtra()+(fund('ice')?15:0),loaded:false});},
   sync(){S.targets=[];if(S.orders.some(o=>!o.loaded))S.targets.push({...doorOf('Fish Mart'),icon:'🐟',kind:'mart'});
    for(const o of S.orders)if(o.loaded)S.targets.push({x:o.d.x,y:o.d.y,icon:'📦',kind:'drop',o,left:o.left,max:90,label:'Fish for '+o.d.name});},
   update(dt){S.ot-=dt;if(S.ot<=0&&S.orders.length<5){this.order();S.ot=9;}
@@ -645,7 +659,7 @@ const HAND={
    for(const h of[...S.hails]){h.left-=dt;if(h.left<=0){S.hails.splice(S.hails.indexOf(h),1);S.st.lost++;toast(h.who+' got fed up and walked.','bad');}}if(S.fare)S.fare.t+=dt;this.sync();},
   arrive(t){if(t.kind==='hail'){const h=t.h;S.hails.splice(S.hails.indexOf(h),1);let d;for(let i=0;i<10;i++){d=randPlace();if(plen({x:t.x,y:t.y},d,'road')>=8)break;}
     const len=plen({x:t.x,y:t.y},d,'road');S.fare={who:h.who,d,t:0,len,exp:(len/player.speed*1.5+3)*dif().t};toast('🗨️ "'+pick(LINES).replace('{d}',d.name)+'"');sfx.horn();}
-   else{const f=S.fare;const base=6+Math.round(f.len*.6);pay(base,t.x,t.y);S.st.fares++;
+   else{const f=S.fare;const base=Math.round((6+Math.round(f.len*.6))*(fund('meter')?1.15:1));pay(base,t.x,t.y);S.st.fares++;
     if(f.t<=f.exp){S.st.tips++;setTimeout(()=>{if(S&&mode==='play')pay(Math.ceil(base*.35),t.x,t.y-1,'tip!')},250);if(S.st.tips>=5)unlockAch('tips');}S.fare=null;sfx.ding();}this.sync();},
   focus(){return S.fare?S.targets[0]:nearest(S.targets);},
   obj(){if(S.fare){const l=Math.max(0,S.fare.exp-S.fare.t);return`🚕 <b>${S.fare.who}</b> → ${S.fare.d.name}<div class="sub">${l>0?'Tip if you arrive within '+Math.ceil(l)+'s':'Too slow for a tip now'}</div>`;}
@@ -653,7 +667,7 @@ const HAND={
  },
  fisher:{icon:'🎣',
   blocked(t){return t.kind==='shoal'&&S.hold>=S.cap;},
-  init(){S.hold=0;S.cap=6+S.rank;S.sp=0;S.st.boxes=0;S.st.hauls=0;for(let i=0;i<3;i++)this.shoal();},
+  init(){S.hold=0;S.cap=6+S.rank+(fund('nets')?3:0);S.sp=0;S.st.boxes=0;S.st.hauls=0;for(let i=0;i<3;i++)this.shoal();},
   shoal(){if(!S.seaD)S.seaD=bfs(26,7,'sea').dist;for(let k=0;k<120;k++){const x=4+Math.random()*29|0,y=Math.random()*34|0;if(!pass(x,y,'sea')||S.seaD[y*W+x]<8||S.targets.some(t=>t.x===x&&t.y===y))continue;
     const L=(45+Math.random()*20)*dif().t+xtra();S.targets.push({x,y,icon:'🐟',kind:'shoal',fish:2+Math.random()*3|0,left:L,max:L,label:'Shoal'});return;}},
   update(dt){for(const t of S.targets.filter(q=>q.kind==='shoal')){t.left-=dt;if(t.left<=0)rmT(t);}S.sp-=dt;if(S.sp<=0&&S.targets.filter(q=>q.kind==='shoal').length<3){this.shoal();S.sp=4;}},
@@ -673,7 +687,7 @@ const HAND={
       if(Math.random()<.5){const p=pick([[22,15],[22,24],[22,26]]);const L=40*dif().t+xtra();S.targets.push({x:p[0],y:p[1],icon:'🕸️',kind:'nets',label:'Nets need mending on the clifftop',left:L,max:L,urgent:true});toast('🕸️ The nets need mending!');}
       else{S.targets.push({...doorOf('Bathing Pool'),icon:'🦪',kind:'mussel',label:'Gather mussels on the rocks by the Bathing Pool'});toast('🦪 Gather mussels to bait the lines');}}
     for(const t of S.targets.filter(q=>q.kind==='nets')){t.left-=dt;if(t.left<=0){rmT(t);toast('Somebody else mended the nets.','bad');}}},
-  arrive(t){if(t.kind==='refill'){rmT(t);S.creel=6+S.rank;for(let i=0;i<Math.min(3,S.creel);i++)this.buyer();toast('Creel filled with '+S.creel+' fish');sfx.clank();}
+  arrive(t){if(t.kind==='refill'){rmT(t);S.creel=6+S.rank+(fund('creelx')?3:0);for(let i=0;i<Math.min(3,S.creel);i++)this.buyer();toast('Creel filled with '+S.creel+' fish');sfx.clank();}
     else if(t.kind==='buy'){rmT(t);S.creel--;S.st.sold++;pay(3,t.x,t.y);if(S.st.sold>=25)unlockAch('creel');if(S.creel>this.nb())this.buyer();
       if(S.creel<=0){toast('Creel empty! Back to the Fish Mart','good');S.targets.push({...doorOf('Fish Mart'),icon:'🧺',kind:'refill'});}}
     else if(t.kind==='nets'){rmT(t);S.st.nets++;pay(8,t.x,t.y,'mended');}
@@ -685,7 +699,7 @@ const HAND={
  },
  milk:{icon:'🥛',
   init(){S.bot=0;S.st.pints=0;S.targets.push({...doorOf('Cruats Farm'),icon:'🐄',kind:'refill'});},
-  arrive(t){if(t.kind==='refill'){rmT(t);S.bot=10+2*S.rank;pickHouses(S.bot).forEach(h=>S.targets.push({x:h.door.x,y:h.door.y,icon:'🥛',kind:'house',h,small:true}));toast('Cart loaded with '+S.bot+' pints from Cruats Farm');sfx.clank();}
+  arrive(t){if(t.kind==='refill'){rmT(t);S.bot=10+2*S.rank+(fund('crates')?4:0);pickHouses(S.bot).forEach(h=>S.targets.push({x:h.door.x,y:h.door.y,icon:'🥛',kind:'house',h,small:true}));toast('Cart loaded with '+S.bot+' pints from Cruats Farm');sfx.clank();}
     else{rmT(t);S.bot--;S.st.pints++;pay(2,t.x,t.y);if(S.st.pints>=30)unlockAch('milk');if(S.bot<=0){pay(5,t.x,t.y,'round!');toast('Round done! Back to Cruats Farm for more','good');S.targets.push({...doorOf('Cruats Farm'),icon:'🐄',kind:'refill'});}}},
   obj(){return S.bot?`Pints left: <b>${S.bot}</b><div class="sub">Leave a pint on every doorstep with a 🥛.</div>`:'Load up at <b>Cruats Farm</b>, over the railway bridge';},
  },
@@ -693,7 +707,7 @@ const HAND={
   init(){S.lit=new Set();S.gust=12;S.st.lit=0;S.st.relit=0;S.st.missed=0;S.allLit=false;
     for(const d of DECO)if(d.k==='lamp')S.targets.push({x:d.x,y:d.y,icon:'🔥',kind:'light',small:true,label:'Unlit lamp'});
     S.total=S.targets.length;},
-  update(dt){if(S.lit.size>=3){S.gust-=dt*(WX==='rain'||WX==='snow'?1.6:1);if(S.gust<=0){S.gust=6+Math.random()*5;const keys=[...S.lit];const k=pick(keys);S.lit.delete(k);const[x,y]=k.split(',').map(Number);
+  update(dt){if(S.lit.size>=3){S.gust-=dt*(WX==='rain'||WX==='snow'?1.6:1);if(S.gust<=0){S.gust=(6+Math.random()*5)*(fund('pole')?1.4:1);const keys=[...S.lit];const k=pick(keys);S.lit.delete(k);const[x,y]=k.split(',').map(Number);
       const L=25*dif().t+xtra();S.targets.push({x,y,icon:'💨',kind:'relight',urgent:true,left:L,max:L,label:'The wind blew a lamp out'});toast('💨 A gust has blown out a lamp!','bad');}}
     for(const t of S.targets.filter(q=>q.kind==='relight')){t.left-=dt;if(t.left<=0){t.kind='light';t.icon='🔥';t.urgent=false;t.left=null;S.st.missed++;}}},
   arrive(t){const k=t.x+','+t.y;rmT(t);S.lit.add(k);sfx.ding();
@@ -708,7 +722,7 @@ const HAND={
   sched(){const a=S.stops[(S.next-1+S.stops.length)%S.stops.length],b=S.stops[S.next];S.due=S.t+(plen(a,b,'road')/player.speed*1.45+4)*dif().t;},
   sync(){const s=S.stops[S.next];S.targets=[{x:s.x,y:s.y,icon:'🚏',kind:'stop',label:s.name}];},
   update(dt){S.pt-=dt;if(S.pt<=0){S.pt=2.2;const s=pick(S.stops);if(s.wait<6)s.wait++;}},
-  arrive(t){const s=S.stops[S.next];const off=Math.min(S.pax,Math.random()*(S.pax+1)|0);S.pax=S.pax-off+s.wait;if(s.wait)pay(s.wait*2,t.x,t.y);S.st.pax+=s.wait;s.wait=0;
+  arrive(t){const s=S.stops[S.next];const off=Math.min(S.pax,Math.random()*(S.pax+1)|0);S.pax=S.pax-off+s.wait;if(s.wait)pay(Math.round(s.wait*2*(fund('ticket')?1.5:1)),t.x,t.y);S.st.pax+=s.wait;s.wait=0;
    const late=S.t-S.due;if(late<=3){S.st.on++;setTimeout(()=>{if(S&&mode==='play')pay(4,t.x,t.y-1,'on time!')},250);if(S.st.on>=10)unlockAch('ontime');}else{S.st.late++;toast('Running '+Math.ceil(late)+' min late!','bad');}
    sfx.ding();S.next=(S.next+1)%S.stops.length;this.sched();this.sync();},
   obj(){const s=S.stops[S.next];const rem=S.due-S.t;
@@ -739,6 +753,7 @@ function checkTile(x,y){
   FLOATS.forEach((f,i)=>{if(f[0]===x&&f[1]===y&&!SV.floats.includes(i)){SV.floats.push(i);save();toast(`🔵 Found a glass fishing float! (${SV.floats.length}/6)`,'ach');sfx.star();orderEvent('card');if(SV.floats.length>=6)unlockAch('floats');}});
   for(const c of CARDS)if(!SV.cards.includes(c[0])&&Math.abs(c[2]-x)+Math.abs(c[3]-y)<=1){SV.cards.push(c[0]);save();toast(`📮 New postcard: ${c[1]} (${SV.cards.length}/${CARDS.length})`,'card');sfx.star();orderEvent('card');if(S)S.cards++;if(SV.cards.length>=CARDS.length)unlockAch('postcards');}
   if(x===31&&y===10&&player.mode!=='sea')unlockAch('pier');
+  if(player.mode!=='sea'){if(Math.abs(x-25)+Math.abs(y-24)<=1)unlockAch('viewpoint');if(Math.abs(x-8)+Math.abs(y-29)<=1)unlockAch('jenny');}
   if(Math.abs(dog.fx-(x+.5))<1.2&&Math.abs(dog.fy-(y+.5))<1.2&&player.veh==='walk'){if(!SV.ach.dog)addFloat(x,y,'♥ Woof!','#a8322d');unlockAch('dog');}
 }
 function unlockAch(id){if(SV.ach[id])return;SV.ach[id]=Date.now();save();const a=ACH.find(a=>a[0]===id);toast('🏆 '+a[2],'ach');sfx.star();if(S)S.newAch.push(id);}
@@ -748,8 +763,12 @@ function endShift(){squeakHide();
   SV.earned+=S.earn;SV.purse+=S.earn;d.best=Math.max(d.best,S.earn);d.stars=Math.max(d.stars,stars);d.xp+=stars;d.shifts++;
   const td=todayStr();if(SV.lastDay!==td){SV.streak=SV.lastDay===todayStr(-1)?SV.streak+1:1;SV.lastDay=td;}
   if(SV.streak>=3)unlockAch('streak3');
-  unlockAch('first');if(stars>=3)unlockAch('three');if(SV.earned>=240)unlockAch('pound');if(SV.earned>=1200)unlockAch('fiver');
-  const newRank=rankOf(j.id);if(newRank>=1)unlockAch('promo');if(S.rushEarn>=24)unlockAch('herring');if(S.wx==='haar')unlockAch('haar');
+  {const tot=JOBS.reduce((a,q)=>a+jd(q.id).shifts,0);if(tot>=25)unlockAch('shifts25');if(tot>=60)unlockAch('shifts60');}
+  SV.run3=stars>=3?(SV.run3||0)+1:0;if(SV.run3>=3)unlockAch('hat3');
+  if(S.wx==='rain')unlockAch('rain');if(S.wx==='snow')unlockAch('snow');
+  SV.seasonsDone=SV.seasonsDone||{};SV.seasonsDone[SEASON]=1;if(Object.keys(SV.seasonsDone).length>=4)unlockAch('seasons');
+  unlockAch('first');if(stars>=3)unlockAch('three');if(SV.earned>=240)unlockAch('pound');if(SV.earned>=1200)unlockAch('fiver');if(SV.earned>=2400)unlockAch('tenner');if(SV.purse>=720)unlockAch('bank');
+  const newRank=rankOf(j.id);if(newRank>=1)unlockAch('promo');if(newRank>=4)unlockAch('toprank');if(j.id==='bobby'&&newRank>=2)unlockAch('sarge');if(j.id==='fisher'&&newRank>=4)unlockAch('ownboat');if(S.rushEarn>=24)unlockAch('herring');if(S.wx==='haar')unlockAch('haar');
   const nowUn=JOBS.filter(q=>SV.earned>=q.unlock);if(nowUn.length===JOBS.length)unlockAch('all');if(JOBS.every(q=>jd(q.id).stars>=3))unlockAch('allstar');
   const D=daily(),before=D.list.filter(o=>o.done).length;
   for(const o of D.list){if(o.done)continue;const t=ORDT[o.i];
@@ -1053,6 +1072,16 @@ function drawDeco(d,t){const{x,y}=d;
   case'memorial':box(x+.35,y+.35,x+.65,y+.65,0,.12,'#9a958a','#b0aa9e','#8a857a');box(x+.42,y+.42,x+.58,y+.58,.12,1.0,'#a8a398','#c4beb2','#9a958a');box(x+.38,y+.47,x+.62,y+.53,.82,.88,'#a8a398','#c4beb2','#9a958a');box(x+.47,y+.38,x+.53,y+.62,.82,.88,'#a8a398','#c4beb2','#9a958a');break;
   case'well':box(x+.3,y+.55,x+.7,y+.9,0,.3,'#8a857a','#a39d90','#857f74');qY(y+.9+.002,x+.42,x+.58,.08,.24,'#2a3540');{const p=P(x+.5,y+.95,.1);line(p,[p[0],p[1]+6*Z],'rgba(120,180,210,.8)',1.4*Z);}break;
   case'signal':box(x+.15,y+.25,x+.65,y+.75,0,.75,SNOW?'#eef2f3':'#5a6068','#9a5838','#7a4428');qY(y+.75+.002,x+.2,x+.6,.45,.68,glass());line(P(x+.85,y+.5,0),P(x+.85,y+.5,1.5),'#333',1.4*Z);poly([P(x+.85,y+.5,1.45),P(x+.85,y+.75,1.38),P(x+.85,y+.75,1.32),P(x+.85,y+.5,1.39)],'#c9372f');break;
+    case'phonebox':{if(!SV.vil.phone)break;const a=x+.66,b=y+.06;box(a,b,a+.26,b+.26,0,.95,'#a8261e','#c8302a','#9a2219');box(a-.01,b-.01,a+.27,b+.27,.95,1.02,'#a8261e','#c8302a','#9a2219');
+    qY(b+.26+.002,a+.04,a+.22,.25,.8,LIGHT<.6?'rgba(255,220,140,.85)':glass());qX(a+.26+.002,b+.04,b+.22,.25,.8,LIGHT<.6?'rgba(255,220,140,.75)':glass());qY(b+.26+.003,a+.05,a+.21,.83,.9,'#f3f1ea');break;}
+  case'fountain':{if(!SV.vil.fountain)break;const cx0=x+.25,cy0=y+.25;box(cx0-.16,cy0-.16,cx0+.16,cy0+.16,0,.18,'#5a6068','#6e757c','#4f555c');poly([P(cx0-.12,cy0-.12,.181),P(cx0+.12,cy0-.12,.181),P(cx0+.12,cy0+.12,.181),P(cx0-.12,cy0+.12,.181)],'#6fa9c0');
+    box(cx0-.04,cy0-.04,cx0+.04,cy0+.04,.18,.62,'#2f4a3a','#3f6b47','#2a4232');{const p=P(cx0,cy0,.66);circ(p[0],p[1],3*Z,'#3f6b47');if(!SNOW){for(let i=0;i<3;i++){const u=(t*1.5+i/3)%1;circ(p[0]+(i-1)*4*Z*u,p[1]+u*u*14*Z,1.2*Z,'rgba(170,215,235,.8)');}}}break;}
+  case'sqclock':{if(!SV.vil.clock)break;const a=x+.3,b=y+.72;line(P(a,b,0),P(a,b,1.25),'#1f2a22',2.2*Z);const p=P(a,b,1.38);circ(p[0],p[1],7*Z,'#1f2a22');circ(p[0],p[1],5.6*Z,'#f6f2e2');
+    {const d=new Date(),hh=(d.getHours()%12+d.getMinutes()/60)/12*Math.PI*2,mm=d.getMinutes()/60*Math.PI*2;cx.strokeStyle='#222';cx.lineWidth=1.1*Z;cx.beginPath();cx.moveTo(p[0],p[1]);cx.lineTo(p[0]+Math.sin(hh)*3*Z,p[1]-Math.cos(hh)*3*Z);cx.moveTo(p[0],p[1]);cx.lineTo(p[0]+Math.sin(mm)*4.6*Z,p[1]-Math.cos(mm)*4.6*Z);cx.stroke();}break;}
+  case'scope':{if(!SV.vil.scope)break;const a=x+.7,b=y+.35;for(const[dx,dy]of[[-.12,0],[.1,.08],[0,-.12]])line(P(a+dx,b+dy,0),P(a,b,.72),'#3a3a3a',1.5*Z);
+    const p0=P(a-.1,b-.2,.72),p1=P(a+.16,b+.26,.92);line(p0,p1,'#8a6a2a',5.5*Z);line(p0,p1,'#c9a24a',3.6*Z);circ(p1[0],p1[1],2.8*Z,'#5a4418');break;}
+  case'swings':{if(!SV.vil.swings)break;const y0=y+.25,y1=y+.75,a=x+.5;line(P(a-.12,y0,0),P(a,y0,.9),'#2f5d8a',1.6*Z);line(P(a+.12,y0,0),P(a,y0,.9),'#2f5d8a',1.6*Z);line(P(a-.12,y1,0),P(a,y1,.9),'#2f5d8a',1.6*Z);line(P(a+.12,y1,0),P(a,y1,.9),'#2f5d8a',1.6*Z);line(P(a,y0,.9),P(a,y1,.9),'#2f5d8a',1.8*Z);
+    for(const[k,ph]of[[.38,0],[.62,1.7]]){const sw=Math.sin(t*2.2+ph)*.12,yy=y+k;line(P(a,yy,.9),P(a+sw,yy,.28),'#555',.8*Z);box(a+sw-.07,yy-.06,a+sw+.07,yy+.06,.26,.29,'#8a5a3a','#a06a44','#7a4a2a');}break;}
   case'flagpole':{if(!SV.vil.flag)break;const p0=P(x+.5,y+.5,0),p1=P(x+.5,y+.5,2.2);line(p0,p1,'#eee',1.8*Z);const w=Math.sin(t*4)*2*Z;
     cx.beginPath();cx.moveTo(p1[0],p1[1]);cx.lineTo(p1[0]+20*Z,p1[1]+w);cx.lineTo(p1[0]+20*Z,p1[1]+13*Z+w);cx.lineTo(p1[0],p1[1]+13*Z);cx.closePath();cx.fillStyle='#1f5fb4';cx.fill();
     cx.save();cx.clip();line(p1,[p1[0]+20*Z,p1[1]+13*Z+w],'#fff',2.6*Z);line([p1[0],p1[1]+13*Z],[p1[0]+20*Z,p1[1]+w],'#fff',2.6*Z);cx.restore();break;}
@@ -1379,7 +1408,7 @@ function showHub(tab){mode='board';$('hud').classList.add('hidden');S=null;if(ta
   ov.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>showHub(b.dataset.tab));
   ov.querySelectorAll('.job').forEach(b=>b.onclick=()=>{const j=JOB[b.dataset.j];if(SV.earned<j.unlock){toast('Earn '+lsd(j.unlock-SV.earned)+' more in wages to unlock '+j.name);return;}if(!SV.seenJobs.includes(j.id)){SV.seenJobs.push(j.id);save();}showBrief(j);});
   ov.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy,g=b.dataset.g,v=(g==='kit'?KIT:VIL).find(q=>q[0]===k);if(SV.purse<v[3])return;SV.purse-=v[3];SV[g][k]=1;save();sfx.star();toast('Bought: '+v[1],'good');unlockAch('firstbuy');
-    if(k==='bunting')unlockAch('coronation');if(VIL.every(q=>SV.vil[q[0]]))unlockAch('allvil');applySeason();mmBase=null;if(g==='vil')peek(k);else showHub('fund');});
+    if(k==='bunting')unlockAch('coronation');if(KIT.every(q=>SV.kit[q[0]]))unlockAch('allkit');if(VIL.every(q=>SV.vil[q[0]]))unlockAch('allvil');applySeason();mmBase=null;if(g==='vil')peek(k);else showHub('fund');});
   $('bSet').onclick=()=>showSettings(()=>showHub());$('bTitle').onclick=showTitle;}
 const PEEK={flag:[24,12],boxes:[20,9],benches:[23,21],lamps:[17,16],boats:[26,7],pool:[25,3],hall:[20,12],bunting:[17,14],band:[15,20]};
 function peek(k){const p=PEEK[k];closeOv();mode='peek';cam.x=p[0]+.5;cam.y=p[1]+.5;toast('🏘️ The village thanks you!','good');setTimeout(()=>showHub('fund'),2600);}
@@ -1415,7 +1444,7 @@ function squeakNow(){if(!S||!set().squeak)return;const j=S.job,{n,proj}=squeakTi
   const next=S.stars.find(x=>S.earn<x);
   const st=n>=3?'On course for three stars.':n?`On course for ${n} star${n>1?'s':''}.`:'Not yet on course for a star.';
   const need=next!=null?` Another ${lsd(Math.max(1,Math.ceil(next-S.earn)))} earns the next star.`:' All three stars already in the bag!';
-  const el=$('squeak');
+  if(n>=3)setTimeout(()=>unlockAch('frontpage'),900);const el=$('squeak');
   el.innerHTML=`<div class="mast"><span>THE BUCKIE SQUEAK</span><span>${clockStr(j.hour*60+S.t)}</span></div><div class="hl">${dor(fill(pick(SQK[n])))}</div><div class="byl">${dor('By')} <span data-nodor>Alan Beresford</span></div>
    <p>${dor((ln?`${ln[0]} so far: ${ln[1]}. `:'')+st+need)}</p><p class="by">${dor(fill(pick(SQQ[n])))}</p>`;
   el.classList.add('on');sfx.swish();setTimeout(()=>sfx.swish(),120);clearTimeout(sqkT);sqkT=setTimeout(()=>el.classList.remove('on'),7000);}
